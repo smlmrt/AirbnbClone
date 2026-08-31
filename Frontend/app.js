@@ -156,6 +156,7 @@ function checkAuthStatus() {
         if (document.getElementById("registerBtn")) document.getElementById("registerBtn").style.display = "none";
         if (document.getElementById("logoutBtn")) document.getElementById("logoutBtn").style.display = "inline-block";
         if (document.getElementById("addListingBtn")) document.getElementById("addListingBtn").style.display = "inline-block";
+        if (document.getElementById("myListingsBtn")) document.getElementById("myListingsBtn").style.display = "inline-block";
     } else {
         if (userNameDisplay) userNameDisplay.style.display = "none";
         if (adminPanelBtn) adminPanelBtn.style.display = "none";
@@ -165,6 +166,7 @@ function checkAuthStatus() {
         if (document.getElementById("registerBtn")) document.getElementById("registerBtn").style.display = "inline-block";
         if (document.getElementById("logoutBtn")) document.getElementById("logoutBtn").style.display = "none";
         if (document.getElementById("addListingBtn")) document.getElementById("addListingBtn").style.display = "none";
+        if (document.getElementById("myListingsBtn")) document.getElementById("myListingsBtn").style.display = "none";
     }
 }
 

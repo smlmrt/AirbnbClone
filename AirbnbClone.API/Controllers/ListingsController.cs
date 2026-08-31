@@ -112,5 +112,21 @@ namespace AirbnbClone.API.Controllers
 
             return Ok(new { message = "İlan başarıyla silindi." });
         }
+
+        [Authorize]
+        [HttpGet("my-listings")]
+        public async Task<IActionResult> GetMyListings()
+        {
+            var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
+
+            int hostId = int.Parse(userIdStr);
+
+            var listings = await _context.Listings
+                .Where(l => l.HostId == hostId)
+                .ToListAsync();
+            
+            return Ok(listings);
+        }
     }
 }
