@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airbnb Clone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Üst Menü -->
+    <header class="navbar">
+        <div class="logo">
+            <h2>🏠 AirbnbClone</h2>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Nereye gitmek istersiniz?">
+            <button>Ara</button>
+        </div>
+        <div class="nav-links">
+            <span id="userNameDisplay" style="margin-right: 15px; font-weight: bold; color: #FF385C; display: none;"></span>
+            <button id="addListingBtn" style="display: none;">Evini Kiraya Ver</button>
+            <button id="loginBtn" class="login-btn" onclick="window.location.href='login.html'">Giriş Yap</button>
+            <button id="registerBtn" class="login-btn" onclick="window.location.href='register.html'">Kayıt Ol</button>
+            <button id="adminPanelBtn" onclick="window.location.href='admin.html'" style="display: none; background-color: #222; color: white; padding: 10px 15px; border-radius: 20px; border: none; cursor: pointer; font-weight: bold;">Admin Paneli</button>
+            <button id="logoutBtn" class="login-btn" style="display: none;">Çıkış Yap</button>
+        </div>
+    </header>
+
+    <!-- Evlerin Listeleneceği Alan -->
+    <main class="container">
+        <h2 class="section-title">Popüler Evler</h2>
+        <div class="listings-grid" id="listingsGrid">
+            <!-- JavaScript ile API'den gelen evler buraya eklenecek -->
+            <p>Evler yükleniyor...</p>
+        </div>
+    </main>
+
+    <!-- İlan Ekleme Modalı (Gizli) -->
+    <div id="addListingModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Yeni Ev İlanı Ekle</h2>
+            <form id="addListingForm">
+                <input type="text" id="title" placeholder="İlan Başlığı" required style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                <textarea id="description" placeholder="Ev Açıklaması" required style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; resize: vertical;"></textarea>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="text" id="city" placeholder="Şehir" required style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+                    <input type="text" id="country" placeholder="Ülke" required style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+                </div>
+                
+                <textarea id="fullAddress" placeholder="Açık Adres" required style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; resize: vertical;"></textarea>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="text" id="propertyType" placeholder="Ev Tipi (Örn: Villa)" required style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+                    <input type="number" id="price" placeholder="Gecelik Fiyat (₺)" required style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="number" id="maxGuests" placeholder="Misafir" required min="1" style="width: 25%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+                    <input type="number" id="bedrooms" placeholder="Oda" required min="1" style="width: 25%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+                    <input type="number" id="beds" placeholder="Yatak" required min="1" style="width: 25%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+                    <input type="number" id="bathrooms" placeholder="Banyo" required min="1" style="width: 25%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+                </div>
+
+                <input type="file" id="imageFile" accept="image/*" style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 8px;">
+                <button type="submit" class="submit-btn" style="width: 100%;">İlanı Kaydet</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

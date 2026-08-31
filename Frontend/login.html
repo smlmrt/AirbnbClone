@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap - Airbnb Clone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo"><h2 onclick="window.location.href='index.html'">🏠 AirbnbClone</h2></div>
+    </header>
+    <main class="container" style="display: flex; justify-content: center; margin-top: 50px;">
+        <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 400px;">
+            <h2 style="margin-bottom: 20px;">Giriş Yap</h2>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="E-posta" required style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                <input type="password" id="loginPassword" placeholder="Şifre" required style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 8px;">
+                <button type="submit" class="submit-btn" style="width: 100%;">Giriş</button>
+            </form>
+            <p style="margin-top: 15px; text-align: center; font-size: 14px;">Hesabın yok mu? <a href="register.html" style="color: #FF385C;">Kayıt Ol</a></p>
+        </div>
+    </main>
+    <script src="auth.js"></script>
+</body>
+</html>
