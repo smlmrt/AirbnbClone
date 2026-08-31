@@ -86,7 +86,7 @@ function renderDetail(listing) {
                         <input type="number" id="guests" value="1" min="1" max="${listing.maxGuests}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
                     </div>
 
-                    <button class="submit-btn" style="width: 100%;" onclick="makeBooking(${listing.id}, ${listing.pricePerNight})">Rezervasyon Yap</button>
+                    <button class="submit-btn" style="width: 100%;" onclick="makeBooking(${listing.id})">Rezervasyon Yap</button>
                     
                     <!-- İlan sahibine özel buton -->
                     ${deleteBtnHtml}
@@ -96,7 +96,13 @@ function renderDetail(listing) {
     `;
 }
 
-async function makeBooking(listingId, pricePerNight) {
+async function makeBooking(listingId) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Rezervasyon yapmak için giriş yapmalısınız.");
+        return;
+    }
+
     const startDate = document.getElementById("startDate").value;
     const endDate = document.getElementById("endDate").value;
     const guests = document.getElementById("guests").value;
@@ -106,7 +112,6 @@ async function makeBooking(listingId, pricePerNight) {
         return;
     }
 
-    // Basit bir gün hesabı ile toplam fiyatı buluyoruz
     const start = new Date(startDate);
     const end = new Date(endDate);
     const days = (end - start) / (1000 * 60 * 60 * 24);
@@ -116,33 +121,37 @@ async function makeBooking(listingId, pricePerNight) {
         return;
     }
 
+    // C# API'nin beklediği (CreateBookingDto) format
     const bookingData = {
-        listingId: listingId,
-        userId: 1, // Şimdilik yine test kullanıcımız (ID:1) üzerinden kiralıyoruz
-        startDate: startDate,
-        endDate: endDate,
-        numberOfGuests: parseInt(guests),
-        totalPrice: days * pricePerNight
+        ListingId: listingId,
+        StartDate: startDate,
+        EndDate: endDate,
+        Guests: parseInt(guests)
     };
 
     try {
         const response = await fetch("http://localhost:5019/api/bookings", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            },
             body: JSON.stringify(bookingData)
         });
 
         if (response.ok) {
-            alert(`Tebrikler! ${days} gece için toplam ${bookingData.totalPrice} ₺ tutarında rezervasyonunuz onaylandı.`);
-            window.location.href = "index.html"; // Başarılı olunca ana sayfaya dön
+            alert("Tebrikler! Rezervasyonunuz başarıyla onaylandı.");
+            window.location.href = "index.html"; 
         } else {
-            alert("Rezervasyon yapılamadı. Tarihleri kontrol ediniz.");
+            // C# tarafından fırlatılan asıl hata metnini ekrana basıyoruz
+            const errorMessage = await response.text();
+            alert(`İşlem Başarısız: ${errorMessage}`);
         }
     } catch (error) {
         console.error("Hata:", error);
+        alert("Sisteme ulaşılamadı. Bağlantınızı kontrol edin.");
     }
 }
-
 
 // İlanı Silme Fonksiyonu
 async function deleteListing(id) {
@@ -159,7 +168,7 @@ async function deleteListing(id) {
 
         if (response.ok) {
             alert("İlan başarıyla silindi.");
-            window.location.href = "index.html"; // Silindikten sonra ana sayfaya dön
+            window.location.href = "index.html"; 
         } else {
             alert("İlan silinirken bir yetki hatası oluştu.");
         }

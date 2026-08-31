@@ -128,7 +128,8 @@ document.getElementById("addListingForm").addEventListener("submit", async (e) =
 function checkAuthStatus() {
     const token = localStorage.getItem("token");
     const userNameDisplay = document.getElementById("userNameDisplay");
-    const adminPanelBtn = document.getElementById("adminPanelBtn"); // Yeni eklendi
+    const adminPanelBtn = document.getElementById("adminPanelBtn");
+    const myTripsBtn = document.getElementById("myTripsBtn"); // Seyahatlerim butonu eklendi
 
     if (token) {
         const decodedToken = parseJwt(token);
@@ -149,6 +150,8 @@ function checkAuthStatus() {
             adminPanelBtn.style.display = role === "Admin" ? "inline-block" : "none";
         }
 
+        if (myTripsBtn) myTripsBtn.style.display = "inline-block"; // Giriş yapan herkes seyahatlerini görebilir
+
         if (document.getElementById("loginBtn")) document.getElementById("loginBtn").style.display = "none";
         if (document.getElementById("registerBtn")) document.getElementById("registerBtn").style.display = "none";
         if (document.getElementById("logoutBtn")) document.getElementById("logoutBtn").style.display = "inline-block";
@@ -156,6 +159,8 @@ function checkAuthStatus() {
     } else {
         if (userNameDisplay) userNameDisplay.style.display = "none";
         if (adminPanelBtn) adminPanelBtn.style.display = "none";
+        if (myTripsBtn) myTripsBtn.style.display = "none"; // Giriş yapılmadıysa gizle
+        
         if (document.getElementById("loginBtn")) document.getElementById("loginBtn").style.display = "inline-block";
         if (document.getElementById("registerBtn")) document.getElementById("registerBtn").style.display = "inline-block";
         if (document.getElementById("logoutBtn")) document.getElementById("logoutBtn").style.display = "none";
