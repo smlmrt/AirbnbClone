@@ -10,6 +10,7 @@ namespace AirbnbClone.Infrastructure.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Listing> Listings { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -17,6 +18,10 @@ namespace AirbnbClone.Infrastructure.Data
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
+                .IsUnique();
+            
+            modelBuilder.Entity<Favorite>()
+                .HasIndex(f => new { f.UserId, f.ListingId })
                 .IsUnique();
 
             if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")

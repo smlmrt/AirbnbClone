@@ -47,13 +47,51 @@ function displayListings(listings) {
     listings.forEach(listing => {
         const card = document.createElement("div");
         card.className = "listing-card";
+        card.style.position = "relative"; // Kalp ikonunu konumlandırmak için gerekli
         
-        card.style.cursor = "pointer";
-        card.onclick = () => {
+        // Kalp İkonu (Sağ Üst Köşe)
+        const heartIcon = document.createElement("div");
+        heartIcon.innerHTML = "🤍"; // Başlangıçta boş kalp
+        heartIcon.style.position = "absolute";
+        heartIcon.style.top = "15px";
+        heartIcon.style.right = "15px";
+        heartIcon.style.fontSize = "24px";
+        heartIcon.style.cursor = "pointer";
+        heartIcon.style.zIndex = "10";
+        heartIcon.style.textShadow = "0 2px 4px rgba(0,0,0,0.5)";
+        
+        // Kalp ikonuna tıklama olayı
+        heartIcon.onclick = async (e) => {
+            e.stopPropagation(); // Karta tıklanıp detaya gitmesini engelle
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Favorilere eklemek için giriş yapmalısınız.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`http://localhost:5019/api/favorites/${listing.id}`, {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    heartIcon.innerHTML = data.isFavorite ? "❤️" : "🤍";
+                }
+            } catch (error) {
+                console.error("Favori işlemi hatası:", error);
+            }
+        };
+
+        // Karta Tıklayınca Detaya Gitme (Kalp hariç)
+        const cardContent = document.createElement("div");
+        cardContent.style.cursor = "pointer";
+        cardContent.onclick = () => {
             window.location.href = `detail.html?id=${listing.id}`;
         };
         
-        card.innerHTML = `
+        cardContent.innerHTML = `
             <img src="${listing.imageUrl || 'https://via.placeholder.com/300x200?text=Gorsel+Yok'}" 
                  alt="${listing.title}" 
                  style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 10px;">
@@ -65,6 +103,8 @@ function displayListings(listings) {
             <p style="margin-top: 6px;"><strong>${listing.pricePerNight} ₺</strong> <span style="color:#717171;">gece</span></p>
         `;
         
+        card.appendChild(heartIcon);
+        card.appendChild(cardContent);
         grid.appendChild(card);
     });
 }
@@ -129,7 +169,9 @@ function checkAuthStatus() {
     const token = localStorage.getItem("token");
     const userNameDisplay = document.getElementById("userNameDisplay");
     const adminPanelBtn = document.getElementById("adminPanelBtn");
-    const myTripsBtn = document.getElementById("myTripsBtn"); // Seyahatlerim butonu eklendi
+    const myTripsBtn = document.getElementById("myTripsBtn"); 
+    const myListingsBtn = document.getElementById("myListingsBtn");
+    const favoritesBtn = document.getElementById("favoritesBtn"); // Favoriler butonu eklendi
 
     if (token) {
         const decodedToken = parseJwt(token);
@@ -150,23 +192,25 @@ function checkAuthStatus() {
             adminPanelBtn.style.display = role === "Admin" ? "inline-block" : "none";
         }
 
-        if (myTripsBtn) myTripsBtn.style.display = "inline-block"; // Giriş yapan herkes seyahatlerini görebilir
+        if (myTripsBtn) myTripsBtn.style.display = "inline-block"; 
+        if (myListingsBtn) myListingsBtn.style.display = "inline-block";
+        if (favoritesBtn) favoritesBtn.style.display = "inline-block"; // Giriş yapan favorilerini görebilir
 
         if (document.getElementById("loginBtn")) document.getElementById("loginBtn").style.display = "none";
         if (document.getElementById("registerBtn")) document.getElementById("registerBtn").style.display = "none";
         if (document.getElementById("logoutBtn")) document.getElementById("logoutBtn").style.display = "inline-block";
         if (document.getElementById("addListingBtn")) document.getElementById("addListingBtn").style.display = "inline-block";
-        if (document.getElementById("myListingsBtn")) document.getElementById("myListingsBtn").style.display = "inline-block";
     } else {
         if (userNameDisplay) userNameDisplay.style.display = "none";
         if (adminPanelBtn) adminPanelBtn.style.display = "none";
-        if (myTripsBtn) myTripsBtn.style.display = "none"; // Giriş yapılmadıysa gizle
+        if (myTripsBtn) myTripsBtn.style.display = "none"; 
+        if (myListingsBtn) myListingsBtn.style.display = "none";
+        if (favoritesBtn) favoritesBtn.style.display = "none"; // Giriş yapılmadıysa gizle
         
         if (document.getElementById("loginBtn")) document.getElementById("loginBtn").style.display = "inline-block";
         if (document.getElementById("registerBtn")) document.getElementById("registerBtn").style.display = "inline-block";
         if (document.getElementById("logoutBtn")) document.getElementById("logoutBtn").style.display = "none";
         if (document.getElementById("addListingBtn")) document.getElementById("addListingBtn").style.display = "none";
-        if (document.getElementById("myListingsBtn")) document.getElementById("myListingsBtn").style.display = "none";
     }
 }
 
