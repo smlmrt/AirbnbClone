@@ -171,7 +171,8 @@ function checkAuthStatus() {
     const adminPanelBtn = document.getElementById("adminPanelBtn");
     const myTripsBtn = document.getElementById("myTripsBtn"); 
     const myListingsBtn = document.getElementById("myListingsBtn");
-    const favoritesBtn = document.getElementById("favoritesBtn"); // Favoriler butonu eklendi
+    const favoritesBtn = document.getElementById("favoritesBtn"); 
+    const profileBtn = document.getElementById("profileBtn"); // Profil butonu eklendi
 
     if (token) {
         const decodedToken = parseJwt(token);
@@ -187,14 +188,12 @@ function checkAuthStatus() {
             userNameDisplay.style.display = "inline-block";
         }
 
-        // Yetki "Admin" ise butonu görünür yap
-        if (adminPanelBtn) {
-            adminPanelBtn.style.display = role === "Admin" ? "inline-block" : "none";
-        }
-
+        if (adminPanelBtn) adminPanelBtn.style.display = role === "Admin" ? "inline-block" : "none";
+        
         if (myTripsBtn) myTripsBtn.style.display = "inline-block"; 
         if (myListingsBtn) myListingsBtn.style.display = "inline-block";
-        if (favoritesBtn) favoritesBtn.style.display = "inline-block"; // Giriş yapan favorilerini görebilir
+        if (favoritesBtn) favoritesBtn.style.display = "inline-block"; 
+        if (profileBtn) profileBtn.style.display = "inline-block"; // Giriş yapanlara Profil butonunu göster
 
         if (document.getElementById("loginBtn")) document.getElementById("loginBtn").style.display = "none";
         if (document.getElementById("registerBtn")) document.getElementById("registerBtn").style.display = "none";
@@ -205,7 +204,8 @@ function checkAuthStatus() {
         if (adminPanelBtn) adminPanelBtn.style.display = "none";
         if (myTripsBtn) myTripsBtn.style.display = "none"; 
         if (myListingsBtn) myListingsBtn.style.display = "none";
-        if (favoritesBtn) favoritesBtn.style.display = "none"; // Giriş yapılmadıysa gizle
+        if (favoritesBtn) favoritesBtn.style.display = "none"; 
+        if (profileBtn) profileBtn.style.display = "none"; // Çıkış yapıldıysa Profil butonunu gizle
         
         if (document.getElementById("loginBtn")) document.getElementById("loginBtn").style.display = "inline-block";
         if (document.getElementById("registerBtn")) document.getElementById("registerBtn").style.display = "inline-block";

@@ -16,6 +16,8 @@ namespace AirbnbClone.Core.Entities
 
         public DateTime DateOfBirth { get; set; }
 
+        public string? Bio { get; set; }
+
         public string Role { get; set; } = "Guest";
         public bool IsEmailVerified { get; set; } = false;
 
