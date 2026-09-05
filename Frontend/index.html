@@ -12,10 +12,7 @@
         <div class="logo">
             <h2>🏠 AirbnbClone</h2>
         </div>
-        <div class="search-bar">
-            <input type="text" placeholder="Nereye gitmek istersiniz?">
-            <button>Ara</button>
-        </div>
+        <!-- Eski arama çubuğu buradan kaldırıldı, detaylı arama çubuğu main içine eklendi -->
         <div class="nav-links">
             <span id="userNameDisplay" style="margin-right: 15px; font-weight: bold; color: #FF385C; display: none;"></span>
             <button id="addListingBtn" style="display: none;">Evini Kiraya Ver</button>
@@ -32,6 +29,26 @@
 
     <!-- Evlerin Listeleneceği Alan -->
     <main class="container">
+        
+        <!-- YENİ ARAMA VE FİLTRELEME MOTORU -->
+        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 30px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+                <label style="font-size: 12px; font-weight: bold; color: #717171;">ŞEHİR VEYA BÖLGE</label>
+                <input type="text" id="searchCity" placeholder="Nereye gitmek istersiniz?" style="width: 100%; border: none; outline: none; font-size: 16px; margin-top: 5px;">
+            </div>
+            <div style="width: 1px; height: 40px; background-color: #ebebeb;"></div>
+            <div style="flex: 1; min-width: 150px;">
+                <label style="font-size: 12px; font-weight: bold; color: #717171;">MAKS. FİYAT (₺)</label>
+                <input type="number" id="searchPrice" placeholder="Örn: 1500" style="width: 100%; border: none; outline: none; font-size: 16px; margin-top: 5px;">
+            </div>
+            <div style="width: 1px; height: 40px; background-color: #ebebeb;"></div>
+            <div style="flex: 1; min-width: 150px;">
+                <label style="font-size: 12px; font-weight: bold; color: #717171;">MİSAFİR</label>
+                <input type="number" id="searchGuests" placeholder="Kişi sayısı" style="width: 100%; border: none; outline: none; font-size: 16px; margin-top: 5px;">
+            </div>
+            <button onclick="performSearch()" style="background-color: #ff5a5f; color: white; border: none; padding: 15px 30px; border-radius: 25px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s;">Ara</button>
+        </div>
+
         <h2 class="section-title">Popüler Evler</h2>
         <div class="listings-grid" id="listingsGrid">
             <!-- JavaScript ile API'den gelen evler buraya eklenecek -->

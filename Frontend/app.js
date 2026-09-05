@@ -40,7 +40,7 @@ function displayListings(listings) {
     grid.innerHTML = ""; // Yükleniyor yazısını temizle
 
     if (listings.length === 0) {
-        grid.innerHTML = "<p>Henüz sistemde hiç ev ilanı yok. İlk ilanı sen ekle!</p>";
+        grid.innerHTML = "<p>Henüz sistemde hiç ev ilanı yok veya aradığınız kriterlere uygun ev bulunamadı.</p>";
         return;
     }
 
@@ -222,4 +222,30 @@ if (logoutBtn) {
         checkAuthStatus();
         window.location.reload();
     };
+}
+
+// Arama Motoru Fonksiyonu
+async function performSearch() {
+    const city = document.getElementById("searchCity").value;
+    const price = document.getElementById("searchPrice").value;
+    const guests = document.getElementById("searchGuests").value;
+
+    let queryParams = [];
+    if (city) queryParams.push(`city=${encodeURIComponent(city)}`);
+    if (price) queryParams.push(`maxPrice=${price}`);
+    if (guests) queryParams.push(`guests=${guests}`);
+
+    const queryString = queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
+
+    try {
+        const response = await fetch(`http://localhost:5019/api/listings/search${queryString}`);
+        if (response.ok) {
+            const listings = await response.json();
+            displayListings(listings); 
+        } else {
+            alert("Arama sırasında bir hata oluştu.");
+        }
+    } catch (error) {
+        console.error("Arama hatası:", error);
+    }
 }

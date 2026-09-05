@@ -128,5 +128,33 @@ namespace AirbnbClone.API.Controllers
             
             return Ok(listings);
         }
+
+        [AllowAnonymous]
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchListings([FromQuery] string? city, [FromQuery] decimal? maxPrice, [FromQuery] int? guests)
+        {
+            var query = _context.Listings.AsQueryable();
+
+            if (maxPrice.HasValue && maxPrice > 0)
+            {
+                query = query.Where(l => l.PricePerNight <= maxPrice.Value);
+            }
+
+            if (guests.HasValue && guests > 0)
+            {
+                query = query.Where(l => l.MaxGuests >= guests.Value || l.MaxGuests == 0);
+            }
+
+            var results = await query.OrderByDescending(l => l.Id).ToListAsync();
+
+            if (!string.IsNullOrEmpty(city))
+            {
+                results = results
+                    .Where(l => l.City.Contains(city, StringComparison.CurrentCultureIgnoreCase))
+                    .ToList();
+            }
+
+            return Ok(results);
+        }
     }
 }
