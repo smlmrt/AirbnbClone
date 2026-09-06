@@ -2,32 +2,24 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-width=1.0">
-    <title>İlanlarım - Airbnb Clone</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #f7f7f7; color: #222; }
-        .navbar { display: flex; justify-content: space-between; padding: 20px 40px; background: white; border-bottom: 1px solid #ebebeb; }
-        .logo { color: #ff5a5f; font-size: 24px; font-weight: bold; cursor: pointer; text-decoration: none; }
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-top: 20px; }
-        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .card-content { padding: 20px; }
-        .action-btn { width: 100%; padding: 10px; margin-top: 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
-        .delete-btn { background-color: #ff5a5f; color: white; }
-    </style>
+    <!-- DÜZELTME: initial-width → initial-scale -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Yayınladığınız ev ilanlarını yönetin.">
+    <title>İlanlarım — AirbnbClone</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header class="navbar">
         <a href="index.html" class="logo">🏠 AirbnbClone</a>
-        <div><button onclick="window.location.href='index.html'" style="padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: bold;">Ana Sayfa</button></div>
+        <button class="btn-back" onclick="window.location.href='index.html'">← Ana Sayfa</button>
     </header>
 
-    <div class="container">
-        <h1 style="margin-bottom: 30px;">İlanlarım</h1>
-        <div id="listingsContainer" class="grid">Yükleniyor...</div>
+    <div class="inner-container">
+        <h1 class="page-title">İlanlarım</h1>
+        <div id="listingsContainer" class="cards-grid">
+            <p class="empty-state">Yükleniyor...</p>
+        </div>
     </div>
 
     <script>
@@ -45,31 +37,37 @@
                 if (res.ok) {
                     const listings = await res.json();
                     const container = document.getElementById("listingsContainer");
-                    
+
                     if (listings.length === 0) {
-                        container.innerHTML = "<p>Sisteme kayıtlı herhangi bir ilanınız bulunmuyor.</p>";
+                        container.innerHTML =
+                            "<p class='empty-state'>Sisteme kayıtlı herhangi bir ilanınız bulunmuyor.</p>";
                         return;
                     }
 
                     container.innerHTML = listings.map(l => `
-                        <div class="card">
-                            <img src="${l.imageUrl || 'https://via.placeholder.com/400x300?text=Gorsel+Yok'}">
-                            <div class="card-content">
+                        <div class="item-card">
+                            <img src="${l.imageUrl || 'https://via.placeholder.com/400x200?text=Görsel+Yok'}"
+                                 alt="${l.title}">
+                            <div class="item-card-content">
                                 <h3>${l.title}</h3>
-                                <p style="color: #717171; margin: 10px 0;">📍 ${l.city}</p>
-                                <p style="font-weight: bold; font-size: 18px;">${l.pricePerNight} ₺ / gece</p>
-                                <button onclick="deleteMyListing(${l.id})" class="action-btn delete-btn">İlanı Sil</button>
+                                <p class="item-card-location">📍 ${l.city}</p>
+                                <p class="item-card-price">${l.pricePerNight} ₺ / gece</p>
+                                <button onclick="deleteMyListing(${l.id})" class="btn-delete-card">
+                                    İlanı Sil
+                                </button>
                             </div>
                         </div>
                     `).join('');
                 }
-            } catch (error) { console.error("Hata:", error); }
+            } catch (error) {
+                console.error("Hata:", error);
+            }
         }
 
         async function deleteMyListing(id) {
             if (!confirm("İlanı silmek istediğinize emin misiniz?")) return;
             const token = localStorage.getItem("token");
-            
+
             const res = await fetch(`${API_URL}/${id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }

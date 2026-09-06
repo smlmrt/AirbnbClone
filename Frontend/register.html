@@ -3,26 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kayıt Ol - Airbnb Clone</title>
+    <meta name="description" content="AirbnbClone'a ücretsiz kayıt olun.">
+    <title>Kayıt Ol — AirbnbClone</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="navbar">
-        <div class="logo"><h2 onclick="window.location.href='index.html'">🏠 AirbnbClone</h2></div>
+        <div class="logo">
+            <h2 onclick="window.location.href='index.html'">🏠 AirbnbClone</h2>
+        </div>
     </header>
-    <main class="container" style="display: flex; justify-content: center; margin-top: 50px;">
-        <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 400px;">
-            <h2 style="margin-bottom: 20px;">Kayıt Ol</h2>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <h2>Kayıt Ol</h2>
             <form id="registerForm">
-                <input type="text" id="regFirstName" placeholder="Ad" required style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                <input type="text" id="regLastName" placeholder="Soyad" required style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                <input type="email" id="regEmail" placeholder="E-posta" required style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                <input type="password" id="regPassword" placeholder="Şifre" required style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 8px;">
-                <button type="submit" class="submit-btn" style="width: 100%;">Hesap Oluştur</button>
+                <input type="text"     id="regFirstName" class="form-input" placeholder="Ad"      required>
+                <input type="text"     id="regLastName"  class="form-input" placeholder="Soyad"   required>
+                <input type="email"    id="regEmail"     class="form-input" placeholder="E-posta" required>
+                <input type="password" id="regPassword"  class="form-input" placeholder="Şifre"   required>
+                <button type="submit" class="submit-btn">Hesap Oluştur</button>
             </form>
-            <p style="margin-top: 15px; text-align: center; font-size: 14px;">Zaten hesabın var mı? <a href="login.html" style="color: #FF385C;">Giriş Yap</a></p>
+            <p class="auth-link">Zaten hesabın var mı? <a href="login.html">Giriş Yap</a></p>
         </div>
     </main>
+
     <script src="auth.js"></script>
 </body>
 </html>

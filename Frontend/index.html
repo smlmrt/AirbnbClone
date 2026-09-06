@@ -3,55 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airbnb Clone</title>
+    <meta name="description" content="AirbnbClone — Türkiye'nin dört bir yanında eşsiz konaklama deneyimleri keşfedin.">
+    <title>AirbnbClone — Ev Kiralama</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <!-- Üst Menü -->
     <header class="navbar">
         <div class="logo">
             <h2>🏠 AirbnbClone</h2>
         </div>
-        <!-- Eski arama çubuğu buradan kaldırıldı, detaylı arama çubuğu main içine eklendi -->
         <div class="nav-links">
-            <span id="userNameDisplay" style="margin-right: 15px; font-weight: bold; color: #FF385C; display: none;"></span>
-            <button id="addListingBtn" style="display: none;">Evini Kiraya Ver</button>
-            <button id="loginBtn" class="login-btn" onclick="window.location.href='login.html'">Giriş Yap</button>
-            <button id="registerBtn" class="login-btn" onclick="window.location.href='register.html'">Kayıt Ol</button>
-            <button id="adminPanelBtn" onclick="window.location.href='admin.html'" style="display: none; background-color: #222; color: white; padding: 10px 15px; border-radius: 20px; border: none; cursor: pointer; font-weight: bold;">Admin Paneli</button>
-            <button id="logoutBtn" class="login-btn" style="display: none;">Çıkış Yap</button>
-            <button id="myTripsBtn" onclick="window.location.href='my-trips.html'" style="display: none; background-color: transparent; border: 1px solid #ddd; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-weight: bold;">Seyahatlerim</button>
-            <button id="myListingsBtn" onclick="window.location.href='my-listings.html'" style="display: none; background-color: transparent; border: 1px solid #ddd; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-right: 5px;">İlanlarım</button>
-            <button id="favoritesBtn" onclick="window.location.href='favorites.html'" style="display: none; background-color: transparent; border: 1px solid #ddd; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-right: 5px;">Favorilerim</button>
-            <button id="profileBtn" onclick="window.location.href='profile.html'" style="display: none; background-color: transparent; border: 1px solid #ddd; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-right: 5px;">Profil</button>
+            <span id="userNameDisplay" class="user-greeting" style="display:none;"></span>
+            <button id="addListingBtn"    style="display:none;">Evini Kiraya Ver</button>
+            <button id="loginBtn"         class="nav-btn-primary" onclick="window.location.href='login.html'">Giriş Yap</button>
+            <button id="registerBtn"      onclick="window.location.href='register.html'">Kayıt Ol</button>
+            <button id="adminPanelBtn"    class="nav-btn-dark" onclick="window.location.href='admin.html'" style="display:none;">Admin Paneli</button>
+            <button id="favoritesBtn"     class="nav-btn-outline" onclick="window.location.href='favorites.html'" style="display:none;">Favorilerim</button>
+            <button id="myListingsBtn"    class="nav-btn-outline" onclick="window.location.href='my-listings.html'" style="display:none;">İlanlarım</button>
+            <button id="myTripsBtn"       class="nav-btn-outline" onclick="window.location.href='my-trips.html'" style="display:none;">Seyahatlerim</button>
+            <button id="profileBtn"       class="nav-btn-outline" onclick="window.location.href='profile.html'" style="display:none;">Profil</button>
+            <button id="logoutBtn"        style="display:none;">Çıkış Yap</button>
         </div>
     </header>
 
-    <!-- Evlerin Listeleneceği Alan -->
+    <!-- Ana İçerik -->
     <main class="container">
-        
-        <!-- YENİ ARAMA VE FİLTRELEME MOTORU -->
-        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 30px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 200px;">
-                <label style="font-size: 12px; font-weight: bold; color: #717171;">ŞEHİR VEYA BÖLGE</label>
-                <input type="text" id="searchCity" placeholder="Nereye gitmek istersiniz?" style="width: 100%; border: none; outline: none; font-size: 16px; margin-top: 5px;">
+
+        <!-- Arama ve Filtreleme -->
+        <div class="search-wrapper">
+            <div class="search-field">
+                <label for="searchCity">ŞEHİR VEYA BÖLGE</label>
+                <input type="text" id="searchCity" placeholder="Nereye gitmek istersiniz?">
             </div>
-            <div style="width: 1px; height: 40px; background-color: #ebebeb;"></div>
-            <div style="flex: 1; min-width: 150px;">
-                <label style="font-size: 12px; font-weight: bold; color: #717171;">MAKS. FİYAT (₺)</label>
-                <input type="number" id="searchPrice" placeholder="Örn: 1500" style="width: 100%; border: none; outline: none; font-size: 16px; margin-top: 5px;">
+            <div class="search-field">
+                <label for="searchPrice">MAKS. FİYAT (₺)</label>
+                <input type="number" id="searchPrice" placeholder="Örn: 1500">
             </div>
-            <div style="width: 1px; height: 40px; background-color: #ebebeb;"></div>
-            <div style="flex: 1; min-width: 150px;">
-                <label style="font-size: 12px; font-weight: bold; color: #717171;">MİSAFİR</label>
-                <input type="number" id="searchGuests" placeholder="Kişi sayısı" style="width: 100%; border: none; outline: none; font-size: 16px; margin-top: 5px;">
+            <div class="search-field">
+                <label for="searchGuests">MİSAFİR</label>
+                <input type="number" id="searchGuests" placeholder="Kişi sayısı">
             </div>
-            <button onclick="performSearch()" style="background-color: #ff5a5f; color: white; border: none; padding: 15px 30px; border-radius: 25px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s;">Ara</button>
+            <button class="search-btn" onclick="performSearch()">🔍 Ara</button>
         </div>
 
         <h2 class="section-title">Popüler Evler</h2>
         <div class="listings-grid" id="listingsGrid">
-            <!-- JavaScript ile API'den gelen evler buraya eklenecek -->
             <p>Evler yükleniyor...</p>
         </div>
     </main>
@@ -62,30 +60,30 @@
             <span class="close-btn">&times;</span>
             <h2>Yeni Ev İlanı Ekle</h2>
             <form id="addListingForm">
-                <input type="text" id="title" placeholder="İlan Başlığı" required style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                <textarea id="description" placeholder="Ev Açıklaması" required style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; resize: vertical;"></textarea>
-                
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <input type="text" id="city" placeholder="Şehir" required style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
-                    <input type="text" id="country" placeholder="Ülke" required style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
-                </div>
-                
-                <textarea id="fullAddress" placeholder="Açık Adres" required style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; resize: vertical;"></textarea>
-                
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <input type="text" id="propertyType" placeholder="Ev Tipi (Örn: Villa)" required style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
-                    <input type="number" id="price" placeholder="Gecelik Fiyat (₺)" required style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+                <input type="text"   id="title"        class="form-input" placeholder="İlan Başlığı" required>
+                <textarea            id="description"  class="form-input" placeholder="Ev Açıklaması" required></textarea>
+
+                <div class="form-row">
+                    <input type="text" id="city"    class="form-input" placeholder="Şehir"  required>
+                    <input type="text" id="country" class="form-input" placeholder="Ülke"   required>
                 </div>
 
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <input type="number" id="maxGuests" placeholder="Misafir" required min="1" style="width: 25%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
-                    <input type="number" id="bedrooms" placeholder="Oda" required min="1" style="width: 25%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
-                    <input type="number" id="beds" placeholder="Yatak" required min="1" style="width: 25%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
-                    <input type="number" id="bathrooms" placeholder="Banyo" required min="1" style="width: 25%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+                <textarea id="fullAddress" class="form-input" placeholder="Açık Adres" required></textarea>
+
+                <div class="form-row">
+                    <input type="text"   id="propertyType" class="form-input" placeholder="Ev Tipi (Örn: Villa)" required>
+                    <input type="number" id="price"        class="form-input" placeholder="Gecelik Fiyat (₺)"   required>
                 </div>
 
-                <input type="file" id="imageFile" accept="image/*" style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 8px;">
-                <button type="submit" class="submit-btn" style="width: 100%;">İlanı Kaydet</button>
+                <div class="form-row">
+                    <input type="number" id="maxGuests" class="form-input" placeholder="Misafir" required min="1">
+                    <input type="number" id="bedrooms"  class="form-input" placeholder="Oda"     required min="1">
+                    <input type="number" id="beds"      class="form-input" placeholder="Yatak"   required min="1">
+                    <input type="number" id="bathrooms" class="form-input" placeholder="Banyo"   required min="1">
+                </div>
+
+                <input type="file" id="imageFile" accept="image/*" class="form-input">
+                <button type="submit" class="submit-btn">İlanı Kaydet</button>
             </form>
         </div>
     </div>

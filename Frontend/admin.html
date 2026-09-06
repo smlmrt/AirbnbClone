@@ -3,61 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Paneli - Airbnb Clone</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background-color: #f7f7f7; color: #222; }
-        .navbar { display: flex; justify-content: space-between; padding: 20px 40px; background: #222; color: white; }
-        .container { max-width: 1000px; margin: 40px auto; display: flex; gap: 30px; }
-        .menu { width: 250px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: fit-content; }
-        .menu-item { padding: 15px; cursor: pointer; font-weight: bold; border-radius: 8px; margin-bottom: 10px; background: #f7f7f7; }
-        .menu-item.active { background: #ff5a5f; color: white; }
-        .content { flex: 1; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ebebeb; }
-        th { background-color: #f7f7f7; }
-        .delete-btn { background-color: #e0484d; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-    </style>
+    <meta name="description" content="AirbnbClone Yönetici Kontrol Paneli">
+    <title>Admin Paneli — AirbnbClone</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header class="navbar">
+    <header class="admin-navbar">
         <h2>🛠️ Yönetici Kontrol Paneli</h2>
-        <button onclick="window.location.href='index.html'" style="padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; background: white; color: #222; cursor: pointer; font-weight: bold;">Ana Sayfa'ya Dön</button>
+        <button class="btn-back" onclick="window.location.href='index.html'">← Ana Sayfa</button>
     </header>
 
-    <div class="container">
-        <div class="menu">
-            <div class="menu-item active" id="tabUsers" onclick="switchTab('users')">Kullanıcı Yönetimi</div>
-            <div class="menu-item" id="tabListings" onclick="switchTab('listings')">İlan Yönetimi</div>
+    <div class="admin-container">
+        <div class="admin-menu">
+            <div class="admin-menu-item active" id="tabUsers"    onclick="switchTab('users')">Kullanıcı Yönetimi</div>
+            <div class="admin-menu-item"         id="tabListings" onclick="switchTab('listings')">İlan Yönetimi</div>
         </div>
 
-        <div class="content" id="panelContent">
+        <div class="admin-content" id="panelContent">
             <!-- JavaScript ile veriler buraya basılacak -->
         </div>
     </div>
 
     <script>
+        // ─── JWT Yardımcı Fonksiyon ───
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(
+                    atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+                );
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // ─── Yetki Kontrolü ───
         const token = localStorage.getItem("token");
-        
-        // JWT içinden Rolü kontrol et
         if (!token) window.location.href = "index.html";
-        try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const decoded = JSON.parse(decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+
+        const decoded = parseJwt(token);
+        if (!decoded) {
+            window.location.href = "index.html";
+        } else {
             const role = decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
             if (role !== "Admin") {
                 alert("Bu sayfaya erişim yetkiniz yok!");
                 window.location.href = "index.html";
             }
-        } catch (e) { window.location.href = "index.html"; }
+        }
 
-        // Sekme Değiştirme ve Veri Yükleme
+        // ─── Sekme Değiştirme ───
         async function switchTab(tab) {
-            document.getElementById("tabUsers").className = tab === 'users' ? "menu-item active" : "menu-item";
-            document.getElementById("tabListings").className = tab === 'listings' ? "menu-item active" : "menu-item";
-            
+            document.getElementById("tabUsers").className    = "admin-menu-item" + (tab === 'users'    ? " active" : "");
+            document.getElementById("tabListings").className = "admin-menu-item" + (tab === 'listings' ? " active" : "");
+
             const content = document.getElementById("panelContent");
             content.innerHTML = "<p>Veriler yükleniyor...</p>";
 
@@ -71,44 +73,66 @@
                     if (tab === 'users') renderUsers(data);
                     else renderListings(data);
                 } else {
-                    content.innerHTML = "<p style='color:red;'>Veriler alınırken yetki hatası oluştu.</p>";
+                    content.innerHTML = "<p style='color:var(--color-primary);'>Veriler alınırken yetki hatası oluştu.</p>";
                 }
             } catch (error) {
-                content.innerHTML = "<p>Sunucuya bağlanılamadı.</p>";
+                content.innerHTML = "<p class='empty-state'>Sunucuya bağlanılamadı.</p>";
             }
         }
 
+        // ─── Kullanıcı Tablosu ───
         function renderUsers(users) {
-            let html = `<h3>Sistemdeki Kullanıcılar (${users.length})</h3><table><tr><th>ID</th><th>Ad Soyad</th><th>Email</th><th>Yetki</th><th>İşlem</th></tr>`;
+            let html = `<h3>Sistemdeki Kullanıcılar (${users.length})</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr><th>ID</th><th>Ad Soyad</th><th>Email</th><th>Yetki</th><th>İşlem</th></tr>
+                    </thead>
+                    <tbody>`;
+
             users.forEach(u => {
-                html += `<tr>
-                    <td>${u.id}</td>
-                    <td>${u.fullName}</td>
-                    <td>${u.email}</td>
-                    <td>${u.role}</td>
-                    <td>${u.role === 'Admin' ? '-' : `<button class="delete-btn" onclick="deleteData('users', ${u.id})">Kullanıcıyı Sil</button>`}</td>
-                </tr>`;
+                html += `
+                    <tr>
+                        <td>${u.id}</td>
+                        <td>${u.fullName}</td>
+                        <td>${u.email}</td>
+                        <td>${u.role}</td>
+                        <td>${u.role === 'Admin'
+                            ? '—'
+                            : `<button class="admin-delete-btn" onclick="deleteData('users', ${u.id})">Sil</button>`
+                        }</td>
+                    </tr>`;
             });
-            document.getElementById("panelContent").innerHTML = html + "</table>";
+
+            document.getElementById("panelContent").innerHTML = html + "</tbody></table>";
         }
 
+        // ─── İlan Tablosu ───
         function renderListings(listings) {
-            let html = `<h3>Sistemdeki İlanlar (${listings.length})</h3><table><tr><th>ID</th><th>Başlık</th><th>Şehir</th><th>Fiyat</th><th>İşlem</th></tr>`;
+            let html = `<h3>Sistemdeki İlanlar (${listings.length})</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr><th>ID</th><th>Başlık</th><th>Şehir</th><th>Fiyat</th><th>İşlem</th></tr>
+                    </thead>
+                    <tbody>`;
+
             listings.forEach(l => {
-                html += `<tr>
-                    <td>${l.id}</td>
-                    <td>${l.title}</td>
-                    <td>${l.city}</td>
-                    <td>${l.pricePerNight} ₺</td>
-                    <td><button class="delete-btn" onclick="deleteData('listings', ${l.id})">İlanı Sil</button></td>
-                </tr>`;
+                html += `
+                    <tr>
+                        <td>${l.id}</td>
+                        <td>${l.title}</td>
+                        <td>${l.city}</td>
+                        <td>${l.pricePerNight} ₺</td>
+                        <td><button class="admin-delete-btn" onclick="deleteData('listings', ${l.id})">Sil</button></td>
+                    </tr>`;
             });
-            document.getElementById("panelContent").innerHTML = html + "</table>";
+
+            document.getElementById("panelContent").innerHTML = html + "</tbody></table>";
         }
 
+        // ─── Kayıt Silme ───
         async function deleteData(type, id) {
-            if (!confirm(`Bu kaydı silmek istediğinize emin misiniz?`)) return;
-            
+            if (!confirm("Bu kaydı silmek istediğinize emin misiniz?")) return;
+
             const res = await fetch(`http://localhost:5019/api/admin/${type}/${id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
@@ -116,7 +140,7 @@
 
             if (res.ok) {
                 alert("Kayıt başarıyla silindi.");
-                switchTab(type); // Tabloyu yenile
+                switchTab(type);
             } else {
                 const err = await res.text();
                 alert(`Silme başarısız: ${err}`);
