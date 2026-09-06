@@ -2,234 +2,129 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-width=1.0">
-    <title>Yönetici Paneli - Airbnb Clone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli - Airbnb Clone</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { display: flex; background-color: #f7f7f7; min-height: 100vh; }
-        
-        /* Sol Menü (Sidebar) */
-        .sidebar { width: 250px; background-color: #222; color: white; padding: 30px 20px; display: flex; flex-direction: column; }
-        .sidebar h2 { color: #ff5a5f; margin-bottom: 40px; font-size: 24px; cursor: pointer; }
-        .menu-item { padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: 500; }
-        .menu-item:hover { background-color: #333; }
-        .menu-item.active { background-color: #ff5a5f; }
-        .logout-btn { margin-top: auto; padding: 15px; background-color: transparent; border: 1px solid #555; color: white; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        .logout-btn:hover { background-color: #555; }
-
-        /* Ana İçerik */
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        
-        /* İstatistik Kartları */
-        .stats-grid { display: flex; gap: 20px; margin-bottom: 40px; }
-        .stat-card { flex: 1; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .stat-card h3 { color: #717171; font-size: 14px; margin-bottom: 10px; font-weight: 500; }
-        .stat-card p { font-size: 32px; font-weight: bold; color: #222; }
-
-        /* Kullanıcılar Tablosu */
-        .table-container { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 15px; border-bottom: 1px solid #ebebeb; }
-        th { color: #717171; font-weight: 500; font-size: 14px; }
-        .role-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .role-admin { background-color: #ffe8e8; color: #ff5a5f; }
-        .role-guest { background-color: #e8f4ff; color: #007bff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background-color: #f7f7f7; color: #222; }
+        .navbar { display: flex; justify-content: space-between; padding: 20px 40px; background: #222; color: white; }
+        .container { max-width: 1000px; margin: 40px auto; display: flex; gap: 30px; }
+        .menu { width: 250px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: fit-content; }
+        .menu-item { padding: 15px; cursor: pointer; font-weight: bold; border-radius: 8px; margin-bottom: 10px; background: #f7f7f7; }
+        .menu-item.active { background: #ff5a5f; color: white; }
+        .content { flex: 1; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ebebeb; }
+        th { background-color: #f7f7f7; }
+        .delete-btn { background-color: #e0484d; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2 onclick="window.location.href='index.html'">AirbnbClone</h2>
-        <div class="menu-item active">📊 Gösterge Paneli</div>
-        <div class="menu-item" onclick="alert('İlan yönetimi yakında eklenecek.')">🏠 İlanlar</div>
-        <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
-    </div>
+    <header class="navbar">
+        <h2>🛠️ Yönetici Kontrol Paneli</h2>
+        <button onclick="window.location.href='index.html'" style="padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; background: white; color: #222; cursor: pointer; font-weight: bold;">Ana Sayfa'ya Dön</button>
+    </header>
 
-    <div class="main-content">
-        <div class="header">
-            <h1>Yönetici Paneli</h1>
-            <p id="adminName" style="font-weight: bold;">Hoş Geldin, Admin</p>
+    <div class="container">
+        <div class="menu">
+            <div class="menu-item active" id="tabUsers" onclick="switchTab('users')">Kullanıcı Yönetimi</div>
+            <div class="menu-item" id="tabListings" onclick="switchTab('listings')">İlan Yönetimi</div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>Toplam Kullanıcı</h3>
-                <p id="totalUsersCount">-</p>
-            </div>
-            <div class="stat-card">
-                <h3>Aktif İlanlar</h3>
-                <p id="totalListingsCount">-</p>
-            </div>
-        </div>
-
-        <div class="table-container">
-            <h2 style="margin-bottom: 20px; font-size: 20px;">Sistemdeki Kullanıcılar</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Ad Soyad</th>
-                        <th>E-Posta</th>
-                        <th>Yetki</th>
-                    </tr>
-                </thead>
-                <tbody id="usersTableBody">
-                    <tr><td colspan="4">Yükleniyor...</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="table-container" style="margin-top: 40px;">
-            <h2 style="margin-bottom: 20px; font-size: 20px;">Sistemdeki İlanlar</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>İlan Başlığı</th>
-                        <th>Şehir</th>
-                        <th>Fiyat</th>
-                        <th>İşlem</th>
-                    </tr>
-                </thead>
-                <tbody id="listingsTableBody">
-                    <tr><td colspan="5">Yükleniyor...</td></tr>
-                </tbody>
-            </table>
+        <div class="content" id="panelContent">
+            <!-- JavaScript ile veriler buraya basılacak -->
         </div>
     </div>
 
     <script>
-        const API_BASE = "http://localhost:5019/api";
         const token = localStorage.getItem("token");
-
-        // JWT Çözümleyici
-        function parseJwt(token) {
-            try {
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                return JSON.parse(decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-            } catch (e) { return null; }
-        }
-
-        // Güvenlik Kontrolü: Sadece Admin Girebilir
-        function checkAdminAccess() {
-            if (!token) {
-                window.location.href = "index.html";
-                return;
-            }
-            
-            const decoded = parseJwt(token);
-            const role = decoded ? (decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]) : "Guest";
-            
+        
+        // JWT içinden Rolü kontrol et
+        if (!token) window.location.href = "index.html";
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const decoded = JSON.parse(decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+            const role = decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
             if (role !== "Admin") {
                 alert("Bu sayfaya erişim yetkiniz yok!");
                 window.location.href = "index.html";
             }
+        } catch (e) { window.location.href = "index.html"; }
 
-            // Admin ismini yazdır
-            const adminName = decoded.unique_name || decoded.name || decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || "Yönetici";
-            document.getElementById("adminName").innerText = `Hoş Geldin, ${adminName}`;
-        }
-
-        // İstatistikleri Çek
-        async function fetchStats() {
-            try {
-                const res = await fetch(`${API_BASE}/admin/stats`, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    const stats = await res.json();
-                    document.getElementById("totalUsersCount").innerText = stats.users;
-                    document.getElementById("totalListingsCount").innerText = stats.listings;
-                }
-            } catch (error) { console.error("Stats Hatası:", error); }
-        }
-
-        // Kullanıcıları Çek
-        async function fetchUsers() {
-            try {
-                const res = await fetch(`${API_BASE}/admin/users`, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    const users = await res.json();
-                    const tbody = document.getElementById("usersTableBody");
-                    tbody.innerHTML = "";
-                    
-                    users.forEach(u => {
-                        const roleClass = u.role === "Admin" ? "role-admin" : "role-guest";
-                        tbody.innerHTML += `
-                            <tr>
-                                <td>#${u.id}</td>
-                                <td style="font-weight: 500;">${u.firstName} ${u.lastName}</td>
-                                <td>${u.email}</td>
-                                <td><span class="role-badge ${roleClass}">${u.role}</span></td>
-                            </tr>
-                        `;
-                    });
-                }
-            } catch (error) { console.error("Users Hatası:", error); }
-        }
-
-        function logout() {
-            localStorage.removeItem("token");
-            window.location.href = "index.html";
-        }
-
-        // Sayfa Yüklendiğinde Çalıştır
-        document.addEventListener("DOMContentLoaded", () => {
-            checkAdminAccess();
-            fetchStats();
-            fetchUsers();
-            fetchListings();
-        });
-
-        // İlanları Çek ve Tabloya Çiz
-        async function fetchListings() {
-            try {
-                const res = await fetch(`${API_BASE}/admin/listings`, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    const listings = await res.json();
-                    const tbody = document.getElementById("listingsTableBody");
-                    tbody.innerHTML = "";
-                    
-                    listings.forEach(l => {
-                        tbody.innerHTML += `
-                            <tr>
-                                <td>#${l.id}</td>
-                                <td style="font-weight: 500;">${l.title}</td>
-                                <td>${l.city}</td>
-                                <td>${l.pricePerNight} ₺</td>
-                                <td>
-                                    <button onclick="deleteListingAsAdmin(${l.id})" style="background-color: #ff5a5f; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">Sil</button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                }
-            } catch (error) { console.error("İlanlar Hatası:", error); }
-        }
-
-        // Admin Olarak İlan Sil
-        async function deleteListingAsAdmin(id) {
-            if (!confirm(`ID'si ${id} olan bu ilanı kalıcı olarak silmek istediğinize emin misiniz?`)) return;
+        // Sekme Değiştirme ve Veri Yükleme
+        async function switchTab(tab) {
+            document.getElementById("tabUsers").className = tab === 'users' ? "menu-item active" : "menu-item";
+            document.getElementById("tabListings").className = tab === 'listings' ? "menu-item active" : "menu-item";
+            
+            const content = document.getElementById("panelContent");
+            content.innerHTML = "<p>Veriler yükleniyor...</p>";
 
             try {
-                const res = await fetch(`${API_BASE}/admin/listings/${id}`, {
-                    method: "DELETE",
+                const res = await fetch(`http://localhost:5019/api/admin/${tab}`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
-                
+
                 if (res.ok) {
-                    alert("İlan başarıyla silindi.");
-                    fetchListings(); // Tabloyu anında güncelle
-                    fetchStats();    // İstatistik sayaçlarını güncelle
+                    const data = await res.json();
+                    if (tab === 'users') renderUsers(data);
+                    else renderListings(data);
+                } else {
+                    content.innerHTML = "<p style='color:red;'>Veriler alınırken yetki hatası oluştu.</p>";
                 }
-            } catch (error) { console.error("Silme Hatası:", error); }
+            } catch (error) {
+                content.innerHTML = "<p>Sunucuya bağlanılamadı.</p>";
+            }
         }
+
+        function renderUsers(users) {
+            let html = `<h3>Sistemdeki Kullanıcılar (${users.length})</h3><table><tr><th>ID</th><th>Ad Soyad</th><th>Email</th><th>Yetki</th><th>İşlem</th></tr>`;
+            users.forEach(u => {
+                html += `<tr>
+                    <td>${u.id}</td>
+                    <td>${u.fullName}</td>
+                    <td>${u.email}</td>
+                    <td>${u.role}</td>
+                    <td>${u.role === 'Admin' ? '-' : `<button class="delete-btn" onclick="deleteData('users', ${u.id})">Kullanıcıyı Sil</button>`}</td>
+                </tr>`;
+            });
+            document.getElementById("panelContent").innerHTML = html + "</table>";
+        }
+
+        function renderListings(listings) {
+            let html = `<h3>Sistemdeki İlanlar (${listings.length})</h3><table><tr><th>ID</th><th>Başlık</th><th>Şehir</th><th>Fiyat</th><th>İşlem</th></tr>`;
+            listings.forEach(l => {
+                html += `<tr>
+                    <td>${l.id}</td>
+                    <td>${l.title}</td>
+                    <td>${l.city}</td>
+                    <td>${l.pricePerNight} ₺</td>
+                    <td><button class="delete-btn" onclick="deleteData('listings', ${l.id})">İlanı Sil</button></td>
+                </tr>`;
+            });
+            document.getElementById("panelContent").innerHTML = html + "</table>";
+        }
+
+        async function deleteData(type, id) {
+            if (!confirm(`Bu kaydı silmek istediğinize emin misiniz?`)) return;
+            
+            const res = await fetch(`http://localhost:5019/api/admin/${type}/${id}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                alert("Kayıt başarıyla silindi.");
+                switchTab(type); // Tabloyu yenile
+            } else {
+                const err = await res.text();
+                alert(`Silme başarısız: ${err}`);
+            }
+        }
+
+        // Sayfa ilk açıldığında kullanıcılar sekmesini yükle
+        document.addEventListener("DOMContentLoaded", () => switchTab('users'));
     </script>
 </body>
 </html>
