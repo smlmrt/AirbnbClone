@@ -81,6 +81,12 @@ function renderDetail(listing) {
                         ${listing.description || 'Bu harika evde unutulmaz bir konaklama deneyimi yaşayın.'}
                     </p>
 
+                    <!-- HARİTA BÖLÜMÜ -->
+                    <div style="margin-top: 40px; margin-bottom: 40px;">
+                        <h2 style="font-size: 22px; margin-bottom: 20px;">Konum</h2>
+                        <div id="map" style="width: 100%; height: 350px; border-radius: 12px; z-index: 1;"></div>
+                    </div>
+
                     <!-- Yorumlar bu div içine enjekte edilir -->
                     <div id="reviewsSection" class="reviews-section">
                         Yorumlar yükleniyor...
@@ -108,6 +114,9 @@ function renderDetail(listing) {
             </div>
         </div>
     `;
+
+    // Arayüz oluştuktan sonra haritayı başlatıyoruz
+    initMap(listing.city, listing.country);
 }
 
 // ─── YORUM SİSTEMİ ───
@@ -158,7 +167,6 @@ function renderReviews(reviews, listingId) {
         html += `<p class="empty-state">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>`;
     } else {
         reviews.forEach(r => {
-            // API'den gelen verinin CamelCase veya PascalCase olabileceğini tolere ediyoruz
             const userName    = r.userName    || r.UserName    || "Anonim";
             const comment     = r.comment     || r.Comment     || "";
             const rating      = r.rating      || r.Rating      || 5;
@@ -276,5 +284,43 @@ async function deleteListing(id) {
         }
     } catch (error) {
         console.error("Hata:", error);
+    }
+}
+
+// ─── HARİTA ───
+
+async function initMap(city, country) {
+    const mapContainer = document.getElementById('map');
+    if (!mapContainer) return;
+
+    try {
+        // Ücretsiz Geocoding servisi ile şehri koordinata çeviriyoruz
+        const query = encodeURIComponent(`${city}, ${country}`);
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
+        const data = await response.json();
+
+        if (data && data.length > 0) {
+            const lat = data[0].lat;
+            const lon = data[0].lon;
+
+            // Haritayı başlat
+            const map = L.map('map').setView([lat, lon], 13);
+            
+            // Harita tasarım katmanı
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Kırmızı yer imi ekle
+            L.marker([lat, lon]).addTo(map)
+                .bindPopup(`<b>${city}</b><br>${country}`)
+                .openPopup();
+        } else {
+            mapContainer.innerHTML = "<p style='padding: 20px; text-align: center; color: #717171;'>Konum haritada bulunamadı.</p>";
+            mapContainer.style.backgroundColor = "#f7f7f7";
+        }
+    } catch (error) {
+        console.error("Harita hatası:", error);
+        mapContainer.innerHTML = "<p>Harita yüklenemedi.</p>";
     }
 }
