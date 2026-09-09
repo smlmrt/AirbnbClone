@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Favorilere eklediğiniz ev ilanlarını görüntüleyin.">
+    <title>Favorilerim — AirbnbClone</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Üst Menü -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="index.html">🏠 AirbnbClone</a>
+        </div>
+        <div class="nav-links">
+            <span id="userNameDisplay" class="nav-greeting" style="display:none;"></span>
+            
+            <button id="addListingBtn" class="nav-btn" style="display:none;" onclick="window.location.href='index.html'">Evini Kiraya Ver</button>
+            <button id="favoritesBtn" class="nav-btn" onclick="window.location.href='favorites.html'" style="display:none;">Favorilerim</button>
+            <button id="myListingsBtn" class="nav-btn" onclick="window.location.href='my-listings.html'" style="display:none;">İlanlarım</button>
+            <button id="myTripsBtn" class="nav-btn" onclick="window.location.href='my-trips.html'" style="display:none;">Seyahatlerim</button>
+            
+            <button id="profileBtn" class="nav-btn nav-btn-outline" onclick="window.location.href='profile.html'" style="display:none; margin-left: 10px;">Profil</button>
+            <button id="adminPanelBtn" class="nav-btn nav-btn-admin" onclick="window.location.href='admin.html'" style="display:none;">Admin Paneli</button>
+            <button id="logoutBtn" class="nav-btn nav-btn-logout" style="display:none;">Çıkış Yap</button>
+            
+            <button id="loginBtn" class="nav-btn" onclick="window.location.href='login.html'">Giriş Yap</button>
+            <button id="registerBtn" class="nav-btn nav-btn-outline" onclick="window.location.href='register.html'">Kayıt Ol</button>
+        </div>
+    </header>
+
+    <div class="inner-container">
+        <h1 class="page-title">Favorilerim</h1>
+        <div id="favoritesContainer" class="cards-grid">
+            <p class="empty-state">Yükleniyor...</p>
+        </div>
+    </div>
+
+    <script src="../js/navbar.js"></script>
+    <script>
+        const token = localStorage.getItem("token");
+        if (!token) window.location.href = "index.html";
+
+        async function fetchFavorites() {
+            try {
+                const res = await fetch("http://localhost:5019/api/favorites", { headers: { "Authorization": `Bearer ${token}` } });
+                if (res.ok) {
+                    const listings = await res.json();
+                    const container = document.getElementById("favoritesContainer");
+                    if (listings.length === 0) {
+                        container.innerHTML = "<p class='empty-state'>Favori ilanınız bulunmuyor.</p>"; return;
+                    }
+                    container.innerHTML = listings.map(l => `
+                        <div class="item-card" style="cursor:pointer;" onclick="window.location.href='detail.html?id=${l.id}'">
+                            <img src="${l.imageUrl || 'https://via.placeholder.com/400x200?text=Görsel+Yok'}" alt="${l.title}">
+                            <div class="item-card-content">
+                                <h3>${l.title}</h3>
+                                <p class="item-card-location">📍 ${l.city}</p>
+                                <p class="item-card-price">${l.pricePerNight} ₺ / gece</p>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) { console.error(error); }
+        }
+        document.addEventListener("DOMContentLoaded", fetchFavorites);
+    </script>
+</body>
+</html>

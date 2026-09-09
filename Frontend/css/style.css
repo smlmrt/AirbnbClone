@@ -37,81 +37,76 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 50px;
+    padding: 15px 40px;
     background: var(--color-white);
     border-bottom: 1px solid var(--color-light-gray);
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: var(--shadow-sm);
 }
 
-.logo {
+.logo a {
     color: var(--color-primary);
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
-    cursor: pointer;
     text-decoration: none;
     letter-spacing: -0.5px;
-}
-
-.logo h2 {
-    color: var(--color-primary);
-    font-size: 22px;
-    font-weight: 800;
 }
 
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
 }
 
-.nav-links button {
-    background: none;
-    border: none;
-    padding: 10px 14px;
-    border-radius: var(--radius-lg);
-    cursor: pointer;
+.nav-greeting {
+    font-size: 15px;
     font-weight: 600;
-    font-size: 14px;
-    font-family: inherit;
     color: var(--color-dark);
+    margin-right: 15px;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-dark);
+    cursor: pointer;
     transition: var(--transition);
+    font-family: inherit;
 }
 
-.nav-links button:hover {
-    background: var(--color-bg);
-}
-
-/* Navbar — özel buton stilleri */
-.nav-btn-primary {
-    background: var(--color-primary) !important;
-    color: var(--color-white) !important;
-}
-
-.nav-btn-primary:hover {
-    background: var(--color-primary-dark) !important;
-}
-
-.nav-btn-dark {
-    background: var(--color-dark) !important;
-    color: var(--color-white) !important;
-}
-
-.nav-btn-dark:hover {
-    background: #333 !important;
+.nav-btn:hover {
+    background-color: var(--color-bg);
 }
 
 .nav-btn-outline {
-    border: 1.5px solid var(--color-light-gray) !important;
+    border: 1px solid #ddd !important;
+    box-shadow: var(--shadow-sm);
 }
 
-.user-greeting {
-    font-weight: 600;
-    color: var(--color-primary);
-    font-size: 14px;
-    margin-right: 6px;
+.nav-btn-outline:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.nav-btn-logout {
+    color: #e0484d !important;
+}
+
+.nav-btn-logout:hover {
+    background-color: #fff0f0 !important;
+}
+
+.nav-btn-admin {
+    background-color: var(--color-dark) !important;
+    color: var(--color-white) !important;
+}
+
+.nav-btn-admin:hover {
+    background-color: #000 !important;
 }
 
 /* ─── ARAMA ÇUBUĞU ─── */
@@ -308,7 +303,7 @@ body {
 
 .close-btn:hover { color: var(--color-dark); }
 
-/* ─── FORM ELEMANLARı ─── */
+/* ─── FORM ELEMANLARI ─── */
 .form-input {
     width: 100%;
     padding: 11px 14px;

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="İlan detaylarını inceleyin ve rezervasyon yapın.">
+    <title>İlan Detayı — AirbnbClone</title>
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <!-- Üst Menü -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="index.html">🏠 AirbnbClone</a>
+        </div>
+        <div class="nav-links">
+            <span id="userNameDisplay" class="nav-greeting" style="display:none;"></span>
+            
+            <button id="addListingBtn" class="nav-btn" style="display:none;" onclick="window.location.href='index.html'">Evini Kiraya Ver</button>
+            <button id="favoritesBtn" class="nav-btn" onclick="window.location.href='favorites.html'" style="display:none;">Favorilerim</button>
+            <button id="myListingsBtn" class="nav-btn" onclick="window.location.href='my-listings.html'" style="display:none;">İlanlarım</button>
+            <button id="myTripsBtn" class="nav-btn" onclick="window.location.href='my-trips.html'" style="display:none;">Seyahatlerim</button>
+            
+            <button id="profileBtn" class="nav-btn nav-btn-outline" onclick="window.location.href='profile.html'" style="display:none; margin-left: 10px;">Profil</button>
+            <button id="adminPanelBtn" class="nav-btn nav-btn-admin" onclick="window.location.href='admin.html'" style="display:none;">Admin Paneli</button>
+            <button id="logoutBtn" class="nav-btn nav-btn-logout" style="display:none;">Çıkış Yap</button>
+            
+            <button id="loginBtn" class="nav-btn" onclick="window.location.href='login.html'">Giriş Yap</button>
+            <button id="registerBtn" class="nav-btn nav-btn-outline" onclick="window.location.href='register.html'">Kayıt Ol</button>
+        </div>
+    </header>
+
+    <div class="container" id="detailContainer">
+        <p class="empty-state">İlan detayları yükleniyor...</p>
+    </div>
+
+    <script src="../js/navbar.js"></script>
+    <script src="../js/detail.js"></script>
+</body>
+</html>

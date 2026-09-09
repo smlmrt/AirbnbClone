@@ -5,13 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="AirbnbClone Yönetici Kontrol Paneli">
     <title>Admin Paneli — AirbnbClone</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
-    <header class="admin-navbar">
-        <h2>🛠️ Yönetici Kontrol Paneli</h2>
-        <button class="btn-back" onclick="window.location.href='index.html'">← Ana Sayfa</button>
+    <!-- Üst Menü -->
+    <header class="navbar">
+        <div class="logo">
+            <a href="index.html">🏠 AirbnbClone</a>
+        </div>
+        <div class="nav-links">
+            <span id="userNameDisplay" class="nav-greeting" style="display:none;"></span>
+            
+            <button id="addListingBtn" class="nav-btn" style="display:none;" onclick="window.location.href='index.html'">Evini Kiraya Ver</button>
+            <button id="favoritesBtn" class="nav-btn" onclick="window.location.href='favorites.html'" style="display:none;">Favorilerim</button>
+            <button id="myListingsBtn" class="nav-btn" onclick="window.location.href='my-listings.html'" style="display:none;">İlanlarım</button>
+            <button id="myTripsBtn" class="nav-btn" onclick="window.location.href='my-trips.html'" style="display:none;">Seyahatlerim</button>
+            
+            <button id="profileBtn" class="nav-btn nav-btn-outline" onclick="window.location.href='profile.html'" style="display:none; margin-left: 10px;">Profil</button>
+            <button id="adminPanelBtn" class="nav-btn nav-btn-admin" onclick="window.location.href='admin.html'" style="display:none;">Admin Paneli</button>
+            <button id="logoutBtn" class="nav-btn nav-btn-logout" style="display:none;">Çıkış Yap</button>
+            
+            <button id="loginBtn" class="nav-btn" onclick="window.location.href='login.html'">Giriş Yap</button>
+            <button id="registerBtn" class="nav-btn nav-btn-outline" onclick="window.location.href='register.html'">Kayıt Ol</button>
+        </div>
     </header>
 
     <div class="admin-container">
@@ -25,21 +42,8 @@
         </div>
     </div>
 
+    <script src="../js/navbar.js"></script>
     <script>
-        // ─── JWT Yardımcı Fonksiyon ───
-        function parseJwt(token) {
-            try {
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const jsonPayload = decodeURIComponent(
-                    atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
-                );
-                return JSON.parse(jsonPayload);
-            } catch (e) {
-                return null;
-            }
-        }
-
         // ─── Yetki Kontrolü ───
         const token = localStorage.getItem("token");
         if (!token) window.location.href = "index.html";

@@ -1,23 +1,8 @@
 // DİKKAT: Buradaki port numarasını kendi terminalinde çalışan API portunla değiştirmelisin!
 const API_URL = "http://localhost:5019/api/listings";
 
-// JWT Kimlik Kartını Çözümleyen Fonksiyon
-function parseJwt(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(
-            atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
-        );
-        return JSON.parse(jsonPayload);
-    } catch (e) {
-        return null;
-    }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
     fetchListings();
-    checkAuthStatus();
 });
 
 // Backend'den evleri çeken asenkron fonksiyon
@@ -158,70 +143,7 @@ if (addListingForm) {
     });
 }
 
-// Sayfa yüklendiğinde kullanıcının giriş yapıp yapmadığını kontrol et
-function checkAuthStatus() {
-    const token = localStorage.getItem("token");
-    const userNameDisplay = document.getElementById("userNameDisplay");
-    const adminPanelBtn  = document.getElementById("adminPanelBtn");
-    const myTripsBtn     = document.getElementById("myTripsBtn");
-    const myListingsBtn  = document.getElementById("myListingsBtn");
-    const favoritesBtn   = document.getElementById("favoritesBtn");
-    const profileBtn     = document.getElementById("profileBtn");
 
-    if (token) {
-        const decodedToken = parseJwt(token);
-
-        const userName = decodedToken
-            ? (decodedToken.unique_name
-                || decodedToken.name
-                || decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
-                || "Kullanıcı")
-            : "Kullanıcı";
-
-        const role = decodedToken
-            ? (decodedToken.role
-                || decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"])
-            : "Guest";
-
-        if (userNameDisplay) {
-            userNameDisplay.innerText  = `Merhaba, ${userName}`;
-            userNameDisplay.style.display = "inline-block";
-        }
-
-        if (adminPanelBtn) adminPanelBtn.style.display = role === "Admin" ? "inline-block" : "none";
-        if (myTripsBtn)    myTripsBtn.style.display    = "inline-block";
-        if (myListingsBtn) myListingsBtn.style.display = "inline-block";
-        if (favoritesBtn)  favoritesBtn.style.display  = "inline-block";
-        if (profileBtn)    profileBtn.style.display    = "inline-block";
-
-        if (document.getElementById("loginBtn"))      document.getElementById("loginBtn").style.display  = "none";
-        if (document.getElementById("registerBtn"))   document.getElementById("registerBtn").style.display = "none";
-        if (document.getElementById("logoutBtn"))     document.getElementById("logoutBtn").style.display = "inline-block";
-        if (document.getElementById("addListingBtn")) document.getElementById("addListingBtn").style.display = "inline-block";
-    } else {
-        if (userNameDisplay) userNameDisplay.style.display = "none";
-        if (adminPanelBtn)   adminPanelBtn.style.display   = "none";
-        if (myTripsBtn)      myTripsBtn.style.display      = "none";
-        if (myListingsBtn)   myListingsBtn.style.display   = "none";
-        if (favoritesBtn)    favoritesBtn.style.display    = "none";
-        if (profileBtn)      profileBtn.style.display      = "none";
-
-        if (document.getElementById("loginBtn"))      document.getElementById("loginBtn").style.display  = "inline-block";
-        if (document.getElementById("registerBtn"))   document.getElementById("registerBtn").style.display = "inline-block";
-        if (document.getElementById("logoutBtn"))     document.getElementById("logoutBtn").style.display = "none";
-        if (document.getElementById("addListingBtn")) document.getElementById("addListingBtn").style.display = "none";
-    }
-}
-
-// Çıkış Yapma İşlemi
-const logoutBtn = document.getElementById("logoutBtn");
-if (logoutBtn) {
-    logoutBtn.onclick = () => {
-        localStorage.removeItem("token");
-        checkAuthStatus();
-        window.location.reload();
-    };
-}
 
 // Arama Motoru Fonksiyonu
 async function performSearch() {

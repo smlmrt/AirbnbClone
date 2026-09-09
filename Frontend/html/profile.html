@@ -2,39 +2,50 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <!-- DÜZELTME: initial-width → initial-scale -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Profil bilgilerinizi ve şifrenizi güncelleyin.">
     <title>Profil Ayarları — AirbnbClone</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+    <!-- Üst Menü -->
     <header class="navbar">
-        <a href="index.html" class="logo">🏠 AirbnbClone</a>
-        <button class="btn-back" onclick="window.location.href='index.html'">← Ana Sayfa</button>
+        <div class="logo">
+            <a href="index.html">🏠 AirbnbClone</a>
+        </div>
+        <div class="nav-links">
+            <span id="userNameDisplay" class="nav-greeting" style="display:none;"></span>
+            
+            <button id="addListingBtn" class="nav-btn" style="display:none;" onclick="window.location.href='index.html'">Evini Kiraya Ver</button>
+            <button id="favoritesBtn" class="nav-btn" onclick="window.location.href='favorites.html'" style="display:none;">Favorilerim</button>
+            <button id="myListingsBtn" class="nav-btn" onclick="window.location.href='my-listings.html'" style="display:none;">İlanlarım</button>
+            <button id="myTripsBtn" class="nav-btn" onclick="window.location.href='my-trips.html'" style="display:none;">Seyahatlerim</button>
+            
+            <button id="profileBtn" class="nav-btn nav-btn-outline" onclick="window.location.href='profile.html'" style="display:none; margin-left: 10px;">Profil</button>
+            <button id="adminPanelBtn" class="nav-btn nav-btn-admin" onclick="window.location.href='admin.html'" style="display:none;">Admin Paneli</button>
+            <button id="logoutBtn" class="nav-btn nav-btn-logout" style="display:none;">Çıkış Yap</button>
+            
+            <button id="loginBtn" class="nav-btn" onclick="window.location.href='login.html'">Giriş Yap</button>
+            <button id="registerBtn" class="nav-btn nav-btn-outline" onclick="window.location.href='register.html'">Kayıt Ol</button>
+        </div>
     </header>
 
     <div class="profile-container">
-
         <!-- Profil Güncelleme Kartı -->
         <div class="profile-card">
             <h2>Profil Ayarları</h2>
             <form id="profileForm">
                 <div class="profile-img-center">
-                    <img id="imgPreview" class="profile-img-preview"
-                         src="https://via.placeholder.com/150" alt="Profil Fotoğrafı">
+                    <img id="imgPreview" class="profile-img-preview" src="https://via.placeholder.com/150" alt="Profil Fotoğrafı">
                 </div>
-
                 <div class="form-group">
                     <label class="form-label" for="profileImage">Profil Fotoğrafı</label>
                     <input type="file" id="profileImage" accept="image/*" class="form-input">
                 </div>
-
                 <div class="form-group">
                     <label class="form-label" for="bio">Biyografi</label>
                     <textarea id="bio" rows="4" placeholder="Kendinizden bahsedin..." class="form-input"></textarea>
                 </div>
-
                 <button type="submit" class="btn-dark-full">Profili Güncelle</button>
             </form>
         </div>
@@ -56,9 +67,9 @@
                 <button type="submit" class="submit-btn">Şifreyi Güncelle</button>
             </form>
         </div>
-
     </div>
 
+    <script src="../js/navbar.js"></script>
     <script>
         const token = localStorage.getItem("token");
         if (!token) window.location.href = "index.html";
@@ -73,11 +84,8 @@
             }
         });
 
-        // Profili Getir
         async function loadProfile() {
-            const res = await fetch("http://localhost:5019/api/profile", {
-                headers: { "Authorization": `Bearer ${token}` }
-            });
+            const res = await fetch("http://localhost:5019/api/profile", { headers: { "Authorization": `Bearer ${token}` } });
             if (res.ok) {
                 const data = await res.json();
                 document.getElementById("bio").value = data.bio || "";
@@ -85,51 +93,26 @@
             }
         }
 
-        // Profili Güncelle
         document.getElementById("profileForm").addEventListener("submit", async (e) => {
             e.preventDefault();
             const formData = new FormData();
             formData.append("Bio", document.getElementById("bio").value);
-
             const file = document.getElementById("profileImage").files[0];
             if (file) formData.append("ImageFile", file);
 
-            const res = await fetch("http://localhost:5019/api/profile", {
-                method: "PUT",
-                headers: { "Authorization": `Bearer ${token}` },
-                body: formData
-            });
-
-            if (res.ok) {
-                alert("Profil başarıyla güncellendi!");
-                loadProfile();
-            } else {
-                alert("Profil güncellenirken bir hata oluştu.");
-            }
+            const res = await fetch("http://localhost:5019/api/profile", { method: "PUT", headers: { "Authorization": `Bearer ${token}` }, body: formData });
+            if (res.ok) { alert("Profil güncellendi!"); loadProfile(); } 
+            else alert("Hata oluştu.");
         });
 
-        // Şifre Güncelle
         document.getElementById("passwordForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-            const oldPassword = document.getElementById("oldPassword").value;
-            const newPassword = document.getElementById("newPassword").value;
-
             const res = await fetch("http://localhost:5019/api/profile/change-password", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ OldPassword: oldPassword, NewPassword: newPassword })
+                method: "POST", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ OldPassword: document.getElementById("oldPassword").value, NewPassword: document.getElementById("newPassword").value })
             });
-
-            if (res.ok) {
-                alert("Şifreniz başarıyla değiştirildi.");
-                document.getElementById("passwordForm").reset();
-            } else {
-                const error = await res.text();
-                alert(`Hata: ${error}`);
-            }
+            if (res.ok) { alert("Şifreniz değiştirildi."); document.getElementById("passwordForm").reset(); } 
+            else { const err = await res.text(); alert(`Hata: ${err}`); }
         });
 
         document.addEventListener("DOMContentLoaded", loadProfile);
