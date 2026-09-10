@@ -117,7 +117,9 @@ if (addListingForm) {
 
         const fileInput = document.getElementById("imageFile");
         if (fileInput && fileInput.files.length > 0) {
-            formData.append("ImageFile", fileInput.files[0]);
+            for (let i = 0; i < fileInput.files.length; i++) {
+                formData.append("ImageFiles", fileInput.files[i]);
+            }
         }
 
         try {

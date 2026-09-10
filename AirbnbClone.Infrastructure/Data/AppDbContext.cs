@@ -12,6 +12,7 @@ namespace AirbnbClone.Infrastructure.Data
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<ListingImage> ListingImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

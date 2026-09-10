@@ -23,6 +23,7 @@ namespace AirbnbClone.API.Controllers
         public async Task<ActionResult<IEnumerable<Listing>>> GetListings()
         {
             var listings = await _context.Listings
+                .Include(l => l.Images)
                 .Where(l => l.IsActive)
                 .ToListAsync();
             
@@ -33,7 +34,9 @@ namespace AirbnbClone.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Listing>> GetListing(int id)
         {
-            var listing = await _context.Listings.FindAsync(id);
+            var listing = await _context.Listings
+                .Include(l => l.Images)
+                .FirstOrDefaultAsync(l => l.Id == id);
 
             if (listing == null)
             {
@@ -50,19 +53,39 @@ namespace AirbnbClone.API.Controllers
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (userIdClaim == null) return Unauthorized();
 
-            string imageUrl = "";
-            if (dto.ImageFile != null)
+            var listingImages = new List<ListingImage>();
+            string primaryImageUrl = "";
+
+            // Çoklu dosya kontrolü ve yükleme döngüsü
+            if (dto.ImageFiles != null && dto.ImageFiles.Count > 0)
             {
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + dto.ImageFile.FileName;
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
                 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                bool isFirst = true;
+                foreach (var file in dto.ImageFiles)
                 {
-                    await dto.ImageFile.CopyToAsync(fileStream);
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+                    
+                    var fileUrl = $"{Request.Scheme}://{Request.Host}/uploads/{uniqueFileName}";
+                    
+                    listingImages.Add(new ListingImage 
+                    { 
+                        ImageUrl = fileUrl,
+                        IsCover = isFirst 
+                    });
+
+                    // Eski arayüzün bozulmaması için ilk görseli ana URL olarak saklıyoruz
+                    if (isFirst) primaryImageUrl = fileUrl;
+                    
+                    isFirst = false;
                 }
-                // Frontend'in doğrudan kullanabileceği tam URL'yi oluşturuyoruz
-                imageUrl = $"{Request.Scheme}://{Request.Host}/uploads/{uniqueFileName}";
             }
 
             var newListing = new Listing
@@ -72,17 +95,16 @@ namespace AirbnbClone.API.Controllers
                 Country = dto.Country,
                 PropertyType = dto.PropertyType,
                 PricePerNight = dto.PricePerNight,
-                ImageUrl = imageUrl,
                 HostId = int.Parse(userIdClaim),
                 IsActive = true,
-                
-                // Artık varsayılan değerler yerine DTO'dan gelenleri alıyoruz
                 Description = dto.Description,
                 FullAddress = dto.FullAddress,
                 MaxGuests = dto.MaxGuests,
                 Bedrooms = dto.Bedrooms,
                 Beds = dto.Beds,
-                Bathrooms = dto.Bathrooms
+                Bathrooms = dto.Bathrooms,
+                ImageUrl = primaryImageUrl, 
+                Images = listingImages 
             };
 
             _context.Listings.Add(newListing);

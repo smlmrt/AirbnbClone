@@ -42,7 +42,16 @@ async function fetchListingDetail(id) {
 
 function renderDetail(listing) {
     const container = document.getElementById("detailContainer");
-    const imageUrl = listing.imageUrl || 'https://via.placeholder.com/1000x480?text=Görsel+Yok';
+
+    // Galeri görselleri: images dizisi varsa onu kullan, yoksa tek imageUrl'yi kullan
+    let galleryImages = [];
+    if (listing.images && listing.images.length > 0) {
+        galleryImages = listing.images.map(img => img.imageUrl);
+    } else if (listing.imageUrl) {
+        galleryImages = [listing.imageUrl];
+    } else {
+        galleryImages = ['https://via.placeholder.com/1000x480?text=Görsel+Yok'];
+    }
 
     // Oturum açan kullanıcı ilan sahibi mi kontrol et
     const token = localStorage.getItem("token");
@@ -60,11 +69,44 @@ function renderDetail(listing) {
         ? `<button onclick="deleteListing(${listing.id})" class="btn-dark-submit">İlanı Sil</button>`
         : '';
 
+    // Carousel HTML oluştur
+    const slidesHtml = galleryImages.map((url, i) => `
+        <div class="carousel-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
+            <img src="${url}" alt="${listing.title} - Görsel ${i + 1}">
+        </div>
+    `).join('');
+
+    const dotsHtml = galleryImages.length > 1 ? galleryImages.map((_, i) => `
+        <span class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="goToSlide(${i})"></span>
+    `).join('') : '';
+
+    const navHtml = galleryImages.length > 1 ? `
+        <button class="carousel-btn carousel-btn-prev" onclick="changeSlide(-1)">&#10094;</button>
+        <button class="carousel-btn carousel-btn-next" onclick="changeSlide(1)">&#10095;</button>
+    ` : '';
+
+    const counterHtml = galleryImages.length > 1
+        ? `<span class="carousel-counter" id="carouselCounter">1 / ${galleryImages.length}</span>`
+        : '';
+
+    const carouselHtml = `
+        <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack">
+                ${slidesHtml}
+            </div>
+            ${navHtml}
+            ${counterHtml}
+            <div class="carousel-dots" id="carouselDots">
+                ${dotsHtml}
+            </div>
+        </div>
+    `;
+
     container.innerHTML = `
         <div class="detail-container">
             <h1 class="detail-title">${listing.title}</h1>
             <p class="detail-location">📍 ${listing.city}, ${listing.country}</p>
-            <img src="${imageUrl}" class="detail-image" alt="${listing.title}">
+            ${carouselHtml}
 
             <div class="detail-body">
                 <!-- Sol: Bilgiler + Yorumlar -->
@@ -115,8 +157,46 @@ function renderDetail(listing) {
         </div>
     `;
 
+    // Carousel state
+    window._carouselIndex = 0;
+    window._carouselTotal = galleryImages.length;
+
     // Arayüz oluştuktan sonra haritayı başlatıyoruz
     initMap(listing.city, listing.country);
+}
+
+// ─── CAROUSEL FONKSİYONLARI ───
+
+function changeSlide(direction) {
+    const total = window._carouselTotal;
+    window._carouselIndex = (window._carouselIndex + direction + total) % total;
+    updateCarousel();
+}
+
+function goToSlide(index) {
+    window._carouselIndex = index;
+    updateCarousel();
+}
+
+function updateCarousel() {
+    const index = window._carouselIndex;
+    const total = window._carouselTotal;
+
+    // Slide'ları güncelle
+    document.querySelectorAll('.carousel-slide').forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+    });
+
+    // Noktaları güncelle
+    document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+
+    // Sayacı güncelle
+    const counter = document.getElementById('carouselCounter');
+    if (counter) {
+        counter.textContent = `${index + 1} / ${total}`;
+    }
 }
 
 // ─── YORUM SİSTEMİ ───

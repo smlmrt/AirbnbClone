@@ -26,5 +26,6 @@ namespace AirbnbClone.Core.Entities
         public User? Host { get; set; } = null!;
 
         public ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
+        public ICollection<ListingImage> Images { get; set; } = new List<ListingImage>();
     }
 }
