@@ -14,20 +14,35 @@
         <div class="logo">
             <a href="index.html">🏠 AirbnbClone</a>
         </div>
-        <div class="nav-links">
-            <span id="userNameDisplay" class="nav-greeting" style="display:none;"></span>
-            
-            <button id="addListingBtn" class="nav-btn" style="display:none;">Evini Kiraya Ver</button>
-            <button id="favoritesBtn" class="nav-btn" onclick="window.location.href='favorites.html'" style="display:none;">Favorilerim</button>
-            <button id="myListingsBtn" class="nav-btn" onclick="window.location.href='my-listings.html'" style="display:none;">İlanlarım</button>
-            <button id="myTripsBtn" class="nav-btn" onclick="window.location.href='my-trips.html'" style="display:none;">Seyahatlerim</button>
-            
-            <button id="profileBtn" class="nav-btn nav-btn-outline" onclick="window.location.href='profile.html'" style="display:none; margin-left: 10px;">Profil</button>
-            <button id="adminPanelBtn" class="nav-btn nav-btn-admin" onclick="window.location.href='admin.html'" style="display:none;">Admin Paneli</button>
-            <button id="logoutBtn" class="nav-btn nav-btn-logout" style="display:none;">Çıkış Yap</button>
-            
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="window.location.href='index.html'">Konaklama</button>
+            <button class="nav-tab" onclick="window.location.href='experiences.html'">Etkinlikler</button>
+        </nav>
+
+        <div class="nav-right">
+            <button id="addListingBtn" class="nav-btn nav-btn-outline" style="display:none;" onclick="window.location.href='index.html'">Evini Kiraya Ver</button>
+
             <button id="loginBtn" class="nav-btn" onclick="window.location.href='login.html'">Giriş Yap</button>
             <button id="registerBtn" class="nav-btn nav-btn-outline" onclick="window.location.href='register.html'">Kayıt Ol</button>
+
+            <div class="nav-menu" id="navMenu" style="display:none;">
+                <button class="nav-menu-trigger" id="navMenuTrigger" aria-haspopup="true" aria-expanded="false">
+                    <span class="nav-menu-icon">☰</span>
+                    <span class="nav-menu-avatar">👤</span>
+                </button>
+                <div class="nav-menu-dropdown" id="navMenuDropdown">
+                    <div class="nav-menu-greeting" id="userNameDisplay"></div>
+                    <button class="nav-menu-item" id="myListingsBtn" onclick="window.location.href='my-listings.html'">İlanlarım</button>
+                    <button class="nav-menu-item" id="myExperiencesBtn" onclick="window.location.href='my-experiences.html'">Etkinliklerim</button>
+                    <button class="nav-menu-item" id="myTripsBtn" onclick="window.location.href='my-trips.html'">Seyahatlerim</button>
+                    <button class="nav-menu-item" id="favoritesBtn" onclick="window.location.href='favorites.html'">Favorilerim</button>
+                    <button class="nav-menu-item" id="profileBtn" onclick="window.location.href='profile.html'">Profil</button>
+                    <button class="nav-menu-item" id="adminPanelBtn" onclick="window.location.href='admin.html'">Admin Paneli</button>
+                    <hr class="nav-menu-divider">
+                    <button class="nav-menu-item nav-menu-item-danger" id="logoutBtn">Çıkış Yap</button>
+                </div>
+            </div>
         </div>
     </header>
 

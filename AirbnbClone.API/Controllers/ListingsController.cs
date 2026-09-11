@@ -125,8 +125,8 @@ namespace AirbnbClone.API.Controllers
                 return NotFound("İlan bulunamadı.");
                 
             // Sadece ilanı ekleyen kişi silebilir
-            if (listing.HostId.ToString() != userIdClaim) 
-                return Forbid("Bu ilanı silme yetkiniz yok.");
+            if (listing.HostId.ToString() != userIdClaim)
+                return StatusCode(StatusCodes.Status403Forbidden, new { message = "Bu ilanı silme yetkiniz yok." });
 
             // İlanı veritabanından kaldır
             _context.Listings.Remove(listing);

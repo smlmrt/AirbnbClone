@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Yayınladığınız ev ilanlarını görüntüleyin ve yönetin.">
-    <title>İlanlarım — AirbnbClone</title>
+    <title>Etkinlikler - AirbnbClone</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -15,8 +14,8 @@
         </div>
 
         <nav class="nav-tabs">
-            <button class="nav-tab active" onclick="window.location.href='index.html'">Konaklama</button>
-            <button class="nav-tab" onclick="window.location.href='experiences.html'">Etkinlikler</button>
+            <button class="nav-tab" onclick="window.location.href='index.html'">Konaklama</button>
+            <button class="nav-tab active" onclick="window.location.href='experiences.html'">Etkinlikler</button>
         </nav>
 
         <div class="nav-right">
@@ -45,41 +44,47 @@
         </div>
     </header>
 
-    <div class="inner-container">
-        <h1 class="page-title">İlanlarım</h1>
-        <div id="listingsContainer" class="cards-grid">
-            <p class="empty-state">İlanlarınız yükleniyor...</p>
+    <!-- Ana İçerik -->
+    <main class="container">
+        <div class="page-header-row">
+            <div>
+                <h2 class="section-title">Unutulmaz Yerel Deneyimler</h2>
+                <p style="color: #717171; margin-bottom: 20px;">Yerel rehberlerin düzenlediği etkinlikleri keşfedin ve tatilinizi renklendirin.</p>
+            </div>
+            <button id="addExperienceBtn" class="nav-btn nav-btn-outline" style="display:none;">Etkinlik Ekle</button>
+        </div>
+
+        <div class="listings-grid" id="experiencesGrid">
+            <p>Etkinlikler yükleniyor...</p>
+        </div>
+    </main>
+
+    <!-- Etkinlik Ekleme Modalı (Gizli) -->
+    <div id="addExperienceModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Yeni Etkinlik Ekle</h2>
+            <form id="addExperienceForm">
+                <input type="text" id="expTitle" class="form-input" placeholder="Etkinlik Adı (Örn: Boğazda Tekne Turu)" required>
+                <textarea id="expDescription" class="form-input" placeholder="Etkinliğin detaylarını anlatın..." required></textarea>
+                
+                <div class="form-row">
+                    <input type="text" id="expLocation" class="form-input" placeholder="Konum (Şehir/Bölge)" required>
+                    <input type="number" id="expPrice" class="form-input" placeholder="Kişi Başı Fiyat (₺)" required>
+                </div>
+
+                <div class="form-row">
+                    <input type="number" id="expDuration" class="form-input" placeholder="Süre (Saat)" required min="1">
+                    <input type="number" id="expMaxGroup" class="form-input" placeholder="Maks. Katılımcı" required min="1">
+                </div>
+
+                <input type="file" id="expImage" accept="image/*" class="form-input">
+                <button type="submit" class="submit-btn">Etkinliği Yayınla</button>
+            </form>
         </div>
     </div>
 
     <script src="../js/navbar.js"></script>
-    <script>
-        const token = localStorage.getItem("token");
-        if (!token) window.location.href = "index.html";
-
-        async function fetchMyListings() {
-            try {
-                const res = await fetch("http://localhost:5019/api/listings/my-listings", { headers: { "Authorization": `Bearer ${token}` } });
-                if (res.ok) {
-                    const listings = await res.json();
-                    const container = document.getElementById("listingsContainer");
-                    if (listings.length === 0) {
-                        container.innerHTML = "<p class='empty-state'>Henüz bir ilanınız bulunmuyor.</p>"; return;
-                    }
-                    container.innerHTML = listings.map(l => `
-                        <div class="item-card" style="cursor:pointer;" onclick="window.location.href='detail.html?id=${l.id}'">
-                            <img src="${l.imageUrl || 'https://via.placeholder.com/400x200?text=Görsel+Yok'}" alt="${l.title}">
-                            <div class="item-card-content">
-                                <h3>${l.title}</h3>
-                                <p class="item-card-location">📍 ${l.city}</p>
-                                <p class="item-card-price">${l.pricePerNight} ₺ / gece</p>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-            } catch (error) { console.error(error); }
-        }
-        document.addEventListener("DOMContentLoaded", fetchMyListings);
-    </script>
+    <script src="../js/experiences.js"></script>
 </body>
 </html>

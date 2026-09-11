@@ -17,16 +17,18 @@ function parseJwt(token) {
 function checkNavbarAuth() {
     const token = localStorage.getItem("token");
 
-    const userNameDisplay = document.getElementById("userNameDisplay");
-    const addListingBtn   = document.getElementById("addListingBtn");
-    const favoritesBtn    = document.getElementById("favoritesBtn");
-    const myListingsBtn   = document.getElementById("myListingsBtn");
-    const myTripsBtn      = document.getElementById("myTripsBtn");
-    const profileBtn      = document.getElementById("profileBtn");
-    const adminPanelBtn   = document.getElementById("adminPanelBtn");
-    const logoutBtn       = document.getElementById("logoutBtn");
-    const loginBtn        = document.getElementById("loginBtn");
-    const registerBtn     = document.getElementById("registerBtn");
+    const userNameDisplay  = document.getElementById("userNameDisplay");
+    const addListingBtn    = document.getElementById("addListingBtn");
+    const favoritesBtn     = document.getElementById("favoritesBtn");
+    const myListingsBtn    = document.getElementById("myListingsBtn");
+    const myExperiencesBtn = document.getElementById("myExperiencesBtn");
+    const myTripsBtn       = document.getElementById("myTripsBtn");
+    const profileBtn       = document.getElementById("profileBtn");
+    const adminPanelBtn    = document.getElementById("adminPanelBtn");
+    const logoutBtn        = document.getElementById("logoutBtn");
+    const loginBtn         = document.getElementById("loginBtn");
+    const registerBtn      = document.getElementById("registerBtn");
+    const navMenu          = document.getElementById("navMenu");
 
     if (token) {
         const decodedToken = parseJwt(token);
@@ -41,20 +43,19 @@ function checkNavbarAuth() {
             || decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
             || "Guest";
 
-        if (userNameDisplay) {
-            userNameDisplay.innerText = `Merhaba, ${userName}`;
-            userNameDisplay.style.display = "inline-block";
-        }
+        if (userNameDisplay) userNameDisplay.innerText = `Merhaba, ${userName}`;
 
-        if (addListingBtn)  addListingBtn.style.display  = "inline-block";
-        if (favoritesBtn)   favoritesBtn.style.display   = "inline-block";
-        if (myListingsBtn)  myListingsBtn.style.display  = "inline-block";
-        if (myTripsBtn)     myTripsBtn.style.display     = "inline-block";
-        if (profileBtn)     profileBtn.style.display     = "inline-block";
-        if (adminPanelBtn)  adminPanelBtn.style.display  = role === "Admin" ? "inline-block" : "none";
+        if (navMenu) navMenu.style.display = "inline-flex";
+        if (addListingBtn)    addListingBtn.style.display    = "inline-block";
+        if (favoritesBtn)     favoritesBtn.style.display     = "block";
+        if (myListingsBtn)    myListingsBtn.style.display    = "block";
+        if (myExperiencesBtn) myExperiencesBtn.style.display = "block";
+        if (myTripsBtn)       myTripsBtn.style.display       = "block";
+        if (profileBtn)       profileBtn.style.display       = "block";
+        if (adminPanelBtn)    adminPanelBtn.style.display    = role === "Admin" ? "block" : "none";
 
         if (logoutBtn) {
-            logoutBtn.style.display = "inline-block";
+            logoutBtn.style.display = "block";
             logoutBtn.onclick = () => {
                 localStorage.removeItem("token");
                 window.location.href = "index.html";
@@ -64,18 +65,42 @@ function checkNavbarAuth() {
         if (loginBtn)    loginBtn.style.display    = "none";
         if (registerBtn) registerBtn.style.display = "none";
     } else {
-        if (userNameDisplay) userNameDisplay.style.display = "none";
-        if (addListingBtn)   addListingBtn.style.display   = "none";
-        if (favoritesBtn)    favoritesBtn.style.display    = "none";
-        if (myListingsBtn)   myListingsBtn.style.display   = "none";
-        if (myTripsBtn)      myTripsBtn.style.display      = "none";
-        if (profileBtn)      profileBtn.style.display      = "none";
-        if (adminPanelBtn)   adminPanelBtn.style.display   = "none";
-        if (logoutBtn)       logoutBtn.style.display       = "none";
+        if (navMenu) navMenu.style.display = "none";
+        if (addListingBtn)    addListingBtn.style.display    = "none";
+        if (favoritesBtn)     favoritesBtn.style.display     = "none";
+        if (myListingsBtn)    myListingsBtn.style.display    = "none";
+        if (myExperiencesBtn) myExperiencesBtn.style.display = "none";
+        if (myTripsBtn)       myTripsBtn.style.display       = "none";
+        if (profileBtn)       profileBtn.style.display       = "none";
+        if (adminPanelBtn)    adminPanelBtn.style.display    = "none";
+        if (logoutBtn)        logoutBtn.style.display        = "none";
 
         if (loginBtn)    loginBtn.style.display    = "inline-block";
         if (registerBtn) registerBtn.style.display = "inline-block";
     }
 }
 
-document.addEventListener("DOMContentLoaded", checkNavbarAuth);
+// ─── Kullanıcı Menüsü Açılır/Kapanır ───
+function setupNavMenuToggle() {
+    const trigger = document.getElementById("navMenuTrigger");
+    const dropdown = document.getElementById("navMenuDropdown");
+    if (!trigger || !dropdown) return;
+
+    trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.toggle("open");
+        trigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    dropdown.addEventListener("click", (e) => e.stopPropagation());
+
+    document.addEventListener("click", () => {
+        dropdown.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    checkNavbarAuth();
+    setupNavMenuToggle();
+});

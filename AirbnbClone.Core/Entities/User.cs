@@ -23,5 +23,7 @@ namespace AirbnbClone.Core.Entities
 
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public ICollection<Listing> Listings { get; set; } = new List<Listing>();
+        public ICollection<Experience> Experiences { get; set; } = new List<Experience>();
+        public ICollection<ExperienceBooking> ExperienceBookings { get; set; } = new List<ExperienceBooking>();
     }
 }
